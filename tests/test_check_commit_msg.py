@@ -6,7 +6,7 @@ import re
 import sys
 from unittest.mock import Mock, patch
 
-from check_commit_msg import check_commit_msg, get_commit_msg, main
+from hooks.check_commit_msg import check_commit_msg, get_commit_msg, main
 
 
 def test_check_commit_msg_valid_patterns():
