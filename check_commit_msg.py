@@ -1,5 +1,5 @@
 """
-Commit-msg hook to check the commit message format again regex patterns.
+Commit-msg hook to check the commit message format against regex patterns.
 
 One or multiple acceptance/rejection patterns can be supplied as arguments.
 """
@@ -30,15 +30,15 @@ def check_commit_msg(
     """
     Check a commit message against provided acceptance and rejection patterns.
 
-    :param commit_msg: The commit message to check (str).
-    :param accept_patterns: A list of regular expressions to accept the message (List[str], defaults to ['.*']). (optional)
-    :param reject_patterns: A list of regular expressions to reject the message (List[str], defaults to []). (optional)
+    :param commit_msg: the commit message to check (str)
+    :param accept_patterns: a list of regular expressions to accept the message (List[str], defaults to ['.*']) (optional)
+    :param reject_patterns: a list of regular expressions to reject the message (List[str], defaults to []) (optional)
 
     :return: an integer exit code:
-             - 0: Commit message accepted.
-             - 2: Commit message matched a rejection pattern.
-             - 1: Commit message did not match any of the acceptance patterns supplied.
-             - 99: Error occurred during compilation of regex patterns.
+             - 0: Commit message accepted
+             - 1: Commit message did not match any of the acceptance patterns supplied
+             - 2: Commit message matched a rejection pattern
+             - 99: Error occurred during compilation of regex patterns
     """
     if not commit_msg:
         msg = "Commit message is empty"
@@ -77,8 +77,8 @@ def get_commit_msg(filepath: str) -> str:
     """
     Read the commit message content from a file.
 
-    :param filepath: path to the file containing the commit message (str).
-    :return: the commit message content read from the file (str).
+    :param filepath: path to the file containing the commit message (str)
+    :return: the commit message content read from the file (str)
     """
     with open(filepath) as f:
         return f.read().strip()
@@ -88,7 +88,7 @@ def parse_args() -> argparse.Namespace:
     """
     Parse arguments.
 
-    :return: a Namespace object containing parsed arguments.
+    :return: a Namespace object containing parsed arguments
     """
     parser = argparse.ArgumentParser()
 

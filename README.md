@@ -16,8 +16,8 @@ To use:
 Validates commit messages against provided regular expressions. Offers both acceptance and rejection patterns for fine-grained control over commit message format.
 
 Arguments:
-- `-a=` or `--accept=`: regex pattern to accept if matched (can be used multiple times).
-- `-r=` or `--reject=`: regex pattern to reject if matched (can be used multiple times).
+- `-a` or `--accept`: regex pattern to accept if matched (can be used multiple times).
+- `-r` or `--reject`: regex pattern to reject if matched (can be used multiple times).
 - `--exit-zero`: pass the hook regardless of result. Use with hook-level flag `verbose: True` to print a warning.
 
 Sample usage:
