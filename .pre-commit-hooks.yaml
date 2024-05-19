@@ -4,3 +4,11 @@
     entry: python -m hooks.check_commit_msg
     language: python
     stages: [commit-msg]
+
+-   id: check-branch-name
+    name: Check branch name
+    description: Check that the branch name format matches the supplied regex
+    entry: python -m hooks.check_branch_name
+    language: python
+    stages: [pre-commit]
+    pass_filenames: false
