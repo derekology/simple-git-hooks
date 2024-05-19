@@ -1,0 +1,6 @@
+-   id: check-commit-msg
+    name: Check commit message
+    description: Check that the commit message format matches the supplied regex
+    entry: python -m check_commit_msg
+    language: python
+    stages: [commit-msg]
