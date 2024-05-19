@@ -6,15 +6,19 @@ import re
 import sys
 from unittest.mock import Mock, patch
 
-from hooks.check_commit_msg import check_commit_msg, get_commit_msg, main
+from hooks.check_commit_msg import check_commit_msg, get_commit_msg, parse_args, main
 
 
 def test_check_commit_msg_valid_patterns():
     """Test check_commit_msg with valid commit message."""
-    patterns = ["This is a pattern"]
+    patterns = ["This is a pattern", "This is another pattern"]
 
     # Matches acceptance pattern
     result, msg = check_commit_msg("This is a pattern", accept_patterns=patterns)
+    assert result == 0, msg
+    assert msg == ""
+
+    result, msg = check_commit_msg("This is another pattern", accept_patterns=patterns)
     assert result == 0, msg
     assert msg == ""
 
@@ -73,13 +77,88 @@ def test_get_commit_msg_file_not_found():
             get_commit_msg("non-existent.txt")
 
 
+def test_single_accept():
+    """Test parsing with a single accept pattern."""
+    original_argv = sys.argv
+    sys.argv = ["check_commit_msg.py", "-a", "fix(bug):.*", "mock_filename"]
+    args = parse_args()
+    sys.argv = original_argv
+    assert "fix(bug):.*" in args.accept
+    assert len(args.accept) == 1
+
+
+def test_multiple_accept():
+    """Test parsing with multiple accept patterns."""
+    original_argv = sys.argv
+    sys.argv = [
+        "check_commit_msg.py",
+        "-a",
+        "feat(new):.*",
+        "-a",
+        "refactor:.*",
+        "mock_filename",
+    ]
+    args = parse_args()
+    sys.argv = original_argv
+    assert set(["feat(new):.*", "refactor:.*"]) == set(args.accept)
+    assert len(args.accept) == 2
+
+
+def test_single_reject():
+    """Test parsing with a single reject pattern."""
+    original_argv = sys.argv
+    sys.argv = ["check_commit_msg.py", "-r", "WIP:.*", "mock_filepath"]
+    args = parse_args()
+    sys.argv = original_argv
+    assert "WIP:.*" in args.reject
+    assert len(args.reject) == 1
+
+
+def test_multiple_reject():
+    """Test parsing with multiple reject patterns."""
+    original_argv = sys.argv
+    sys.argv = [
+        "check_commit_msg.py",
+        "-r",
+        "docs:.*",
+        "-r",
+        "test:.*",
+        "mock_filename",
+    ]
+    args = parse_args()
+    sys.argv = original_argv
+    assert set(["docs:.*", "test:.*"]) == set(args.reject)
+    assert len(args.reject) == 2
+
+
+def test_mixed_args():
+    """Test parsing with a mix of accept and reject patterns."""
+    original_argv = sys.argv
+    sys.argv = [
+        "check_commit_msg.py",
+        "-a",
+        "fix(bug):.*",
+        "-r",
+        "WIP:.*",
+        "-a",
+        "refactor:.*",
+        "mock_filename",
+    ]
+    args = parse_args()
+    sys.argv = original_argv
+    assert set(["fix(bug):.*", "refactor:.*"]) == set(args.accept)
+    assert len(args.accept) == 2
+    assert "WIP:.*" in args.reject
+    assert len(args.reject) == 1
+
+
 def test_main_success(mocker):
     """Test main function with successful execution."""
     # Mock check_commit_msg and get_commit_msg to avoid actual file operations
     mocked_args = Mock(filepath="test_file.txt")
-    mocker.patch("check_commit_msg.parse_args", return_value=mocked_args)
-    mocker.patch("check_commit_msg.get_commit_msg", return_value="A message")
-    mocker.patch("check_commit_msg.check_commit_msg", return_value=(0, ""))
+    mocker.patch("hooks.check_commit_msg.parse_args", return_value=mocked_args)
+    mocker.patch("hooks.check_commit_msg.get_commit_msg", return_value="A message")
+    mocker.patch("hooks.check_commit_msg.check_commit_msg", return_value=(0, ""))
     with pytest.raises(SystemExit) as excinfo:
         main()
     assert excinfo.type == SystemExit
@@ -89,9 +168,11 @@ def test_main_success(mocker):
 def test_main_error(mocker, capsys):
     """Test main function with an error during check_commit_msg."""
     mocked_args = Mock(filepath="test_file.txt")
-    mocker.patch("check_commit_msg.parse_args", return_value=mocked_args)
-    mocker.patch("check_commit_msg.get_commit_msg", return_value="A message")
-    mocker.patch("check_commit_msg.check_commit_msg", return_value=(1, "An error"))
+    mocker.patch("hooks.check_commit_msg.parse_args", return_value=mocked_args)
+    mocker.patch("hooks.check_commit_msg.get_commit_msg", return_value="A message")
+    mocker.patch(
+        "hooks.check_commit_msg.check_commit_msg", return_value=(1, "An error")
+    )
     with pytest.raises(SystemExit):
         main()
     assert capsys.readouterr()
