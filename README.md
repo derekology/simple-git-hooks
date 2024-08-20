@@ -10,7 +10,7 @@ To use:
 ```
 repos:
 -    repo: https://github.com/derekology/simple-git-hooks
-     rev: v1.1.0
+     rev: v1.2.0
      hooks:
      -    id: ....
 ```
@@ -58,6 +58,29 @@ Sample usage:
     -    "--accept=^fix/.*"
     -    "--accept=^feat/.*"
     -    "--reject=main"
+    -    "--exit-zero"
+```
+
+**`check-for-pattern`**
+
+Checks whether patterns (provided as regular expressions), are present in the committed files. Offers both required and rejection sequences.
+
+Use `-EsC-` as an escape sequence when necessary.
+
+Arguments:
+
+- `-q` or `--require`: regex pattern to require in each file (can be used multiple times).
+- `-r` or `--reject`: regex pattern to reject in each file (can be used multiple times).
+- `--exit-zero`: pass the hook regardless of result. Use with hook-level flag `verbose: True` to print a warning.
+
+Sample usage:
+
+```
+-   id: check-for-pattern
+    verbose: True
+    args:
+    -    "--require=-EsC-(c-EsC-) 2024 Company Name"
+    -    "--reject=#TODO"
     -    "--exit-zero"
 ```
 
