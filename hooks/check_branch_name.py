@@ -14,7 +14,7 @@ import subprocess
 
 class TextStyle(Enum):
     """
-    Enumeration for combining foreground, background, and attribute codes.
+    Enumeration for PASS/WARN/ERR colour codes.
     """
 
     DEFAULT = "\033[0m"  # Reset all styles
