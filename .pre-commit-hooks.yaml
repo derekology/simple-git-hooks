@@ -1,14 +1,22 @@
--   id: check-commit-msg
-    name: Check commit message
-    description: Check that the commit message format matches the supplied regex
-    entry: python -m hooks.check_commit_msg
-    language: python
-    stages: [commit-msg]
+- id: check-commit-msg
+  name: Check commit message
+  description: Check that the commit message format matches the supplied regex
+  entry: python -m hooks.check_commit_msg
+  language: python
+  stages: [commit-msg]
 
--   id: check-branch-name
-    name: Check branch name
-    description: Check that the branch name format matches the supplied regex
-    entry: python -m hooks.check_branch_name
-    language: python
-    stages: [pre-commit]
-    pass_filenames: false
+- id: check-branch-name
+  name: Check branch name
+  description: Check that the branch name format matches the supplied regex
+  entry: python -m hooks.check_branch_name
+  language: python
+  stages: [pre-commit]
+  pass_filenames: false
+
+- id: check-for-pattern
+  name: Check for pattern
+  description: Check whether the given regex patterns are present in each module
+  entry: python -m hooks.check_for_pattern
+  language: python
+  stages: [pre-commit]
+  pass_filenames: true
