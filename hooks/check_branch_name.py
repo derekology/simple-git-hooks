@@ -108,7 +108,6 @@ def main():
     """
     Drive the program.
     """
-
     args = parse_args()
     branch_name = get_current_branch_name()
 

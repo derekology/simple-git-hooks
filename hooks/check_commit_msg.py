@@ -110,7 +110,6 @@ def main():
     """
     Drive the program.
     """
-
     args = parse_args()
     commit_msg = get_commit_msg(filepath=args.filepath)
     result, msg = check_commit_msg(
